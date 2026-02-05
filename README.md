@@ -1,3 +1,10 @@
 # SOEN342
 SOEN342 project
-Joshua Bitton 40273378
+## **Team Members**
+| Name         | Student ID | GitHub      |
+| ------------ | ---------- | ----------- |
+| Joshua Bitton| 40273378   | Joshua131313|
+| Mico Losloso | 40314038   | MicoLosloso |
+| Selma Bédoui | 40315053   | selmabeds   |
+
+
