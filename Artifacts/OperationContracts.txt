@@ -1,6 +1,5 @@
 Operation Contracts:
 
-
 Contract CO7
 Operation: assignTasks(task[i], projectID)
 Cross References: Use Case: Assign Tasks to Project
@@ -10,7 +9,6 @@ Preconditions:
 Postconditions:
     - Each task[i] is associated with Project instance p. (Association formed)
     - The attribute task[i].project is set to p (Attribute modification)
-
 
 Contract CO8
 Operation: overwriteConfirm(decision)
