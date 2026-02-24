@@ -1,0 +1,44 @@
+Use Case: Create Task
+
+Primary Actor: 
+User
+
+Stakeholders and Interests:
+    - User: Wants to create a task with accurate information
+    - System: Must maintain data consistency and correctly log task history
+
+Description:
+The user creates a new task by entering required and optional information. The system validates the input, stores the task, and records the creation in the activity history.
+
+Preconditions:
+    - The user exists
+    - The system is running
+
+Trigger:
+The user selects the option to create a new task.
+
+Success Guarantee (Postconditions):
+
+A new task is created and stored in the system.
+    - The task has a recorded creation date.
+    - The task status is set to “open.”
+    - Optional attributes (description, due date) are saved if provided.
+    - An activity log entry is recorded for task creation
+
+Main Success Scenario (Basic Flow)
+    1. The user selects “Create Task.”
+    2. The system prompts the user to enter task details.
+    3. The user enters a title and optional information (description, priority, due date).
+    4. The system validates the entered information.
+    5. The system creates the task with default status “open” and assigns the current date as the creation date.
+    6. The system stores the task.
+    7. The system records an activity log entry for the task creation.
+    8. The system confirms successful task creation to the user.
+
+Failure Scenario (Alternative Flows)
+5a. Missing Title
+
+    - The system detects that the title field is empty.
+    - The system displays an error message indicating that a title is required.
+    - The task is not created.
+    - The user is prompted to enter a valid title.
