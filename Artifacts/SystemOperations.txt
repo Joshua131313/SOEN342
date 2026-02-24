@@ -1,0 +1,12 @@
+System Operations identified using the critical SSDs are as follows:
+
+1. createTask(title, description, priority, status, dueDate)
+2. updateTask(taskID, updatedValues)
+3. viewTasksList()
+4. sortTasksBy(attribute)
+5. searchTasks(keywords)
+6. createProject(title, description)
+7. assignTasks(task[i], projectID)
+8. overwriteConfirm(decision)
+9. createSubTask(title)
+10. assignSubTask(subtaskID, taskID)

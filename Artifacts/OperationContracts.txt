@@ -1,5 +1,69 @@
 Operation Contracts:
 
+Contract CO1  
+Operation: createTask(title, description, priority, Status, dueDate)
+Cross References: Use Case: Create Task
+Preconditions: 
+title exists.
+If dueDate is not null, dueDate is not in the past.
+Postconditions:
+A Task instance t was created. (instance creation)
+Task instance t has been added to the TaskDB. (Association formed)
+Activity Entry ae instance is created. (Instance creation)
+
+Contract CO2
+Operation: updateTask(taskID, updatedValues)
+Cross References: Use Case: Update Task 
+Preconditions: 
+Task instance t with taskID exists.
+updatesValues contains at least one attribute to modify.
+If title is a modified attribute, it is not getting modified to Null.
+If status is a modified attribute, it is open, completed, or cancelled. 
+Postconditions:
+Task instance t has title updated if provided. (Attribute modification)
+Task instance t has description updated if provided. (Attribute modification)
+Task instance t has priority updated if provided. (Attribute modification)
+Task instance t has dueDate updated if provided. (Attribute modification)
+Task instance t has status updated if provided. (Attribute modification)
+Task instance t’s association with Project instance p is updated. (Association modification)
+Task instance t’s Tag instances are created or removed according to modifications. (Association creation/deletion)
+Activity Entry ae instance is created. (Instance creation)
+
+Contract CO3  
+Operation: viewTasksList()
+Cross References: Use Case: View Tasks List
+Preconditions: 
+At least one Task instance exists. 
+Postconditions:
+No state change. 
+
+Contract CO4
+Operation: sortTasksBy(attribute)
+Cross References: Use Case: View Tasks List
+Preconditions: 
+At least one Task instance exists.
+attribute belongs to the Task class.
+Postconditions:
+List of Task instance(s) ordered according to attribute selected. (No state change)
+
+Contract CO5  
+Operation: searchTasks(keywords)
+Cross References: Use Case: Search Tasks 
+Preconditions: 
+keywords exists in at least one Task instance.
+Postconditions:
+List of Task instances that correspond to keywords is returned to the user. (No state change)
+
+Contract CO6
+Operation: createProject(title, description)
+Cross References: Use Case: Create Project
+Preconditions: 
+title exists and is not empty.
+Postconditions:
+New Project instance p was created. (Instance creation)
+Project instance p has been added to the ProjectsDB. (Association creation)
+Activity Entry ae instance is created. (Instance creation)
+
 Contract CO7
 Operation: assignTasks(task[i], projectID)
 Cross References: Use Case: Assign Tasks to Project
