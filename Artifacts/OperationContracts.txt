@@ -1,0 +1,44 @@
+Operation Contracts:
+
+Contract CO7
+Operation: assignTasks(task[i], projectID)
+Cross References: Use Case: Assign Tasks to Project
+Preconditions: 
+    - Project instance p with projectID exists
+    - Each Task instance task[i] exists
+Postconditions:
+    - Each task[i] is associated with Project instance p. (Association formed)
+    - The attribute task[i].project is set to p (Attribute modification)
+
+Contract CO8
+Operation: overwriteConfirm(decision)
+Cross References: Use Case: Assign Tasks to Project
+Preconditions: 
+    - Task instance t is already associated with a project p1
+    - Selected project p2 is different from current project p1
+Postconditions:
+    - Association between task t and with old project p1 is removed (Association broken)
+    - Task t is associated with new project p2 (Association formed)
+    - Project attribute t.project is set to the new project p2 (Attribute modification)
+
+Contract CO9
+Operation: createSubTask(title)
+Cross References: Use Case: Create Subtask
+Preconditions: 
+    - Parent task instance t exists
+    - Title exists (not empty)
+Postconditions:
+    - SubTask instance s is created (Instance creation)
+    - Title attribute s.title is set to title (Attribute modification)
+    - Status attribute is set to “open” (Attribute modification)
+
+Contract CO10
+Operation: assignSubTask(subtaskID, taskID)
+Cross References: Use Case: Create Subtask
+Preconditions: 
+    - Task instance t exists with taskID
+    - SubTask instance exists with subtaskID
+    - S is not associated with a task
+Postconditions:
+    - Subtask s is associated with task t (Association formed)
+    - Attribute s.parentTask is set to t (Attribute modification)
