@@ -1,0 +1,15 @@
+TaskName,Description,Subtask,Status,Priority,DueDate,ProjectName,ProjectDescription,Collaborator,CollaboratorCategory
+Task A,Normal task,,OPEN,2,2026-03-20,School,Coursework,Ali,JUNIOR
+Task B,Invalid category,,OPEN,2,2026-03-20,School,Coursework,Ali,SUPERIOR
+Task C,Missing category,,OPEN,2,2026-03-20,School,Coursework,Ali,
+Task D,Category but no collaborator,,OPEN,2,2026-03-20,School,Coursework,,JUNIOR
+Task E,Invalid date,,OPEN,2,20-03-2026,School,Coursework,Ali,JUNIOR
+Task F,No due date,,OPEN,2,,School,Coursework,Ali,JUNIOR
+Task G,Bad status,,IN_PROGRESS,2,2026-03-20,School,Coursework,Ali,JUNIOR
+,No title,,OPEN,2,2026-03-20,School,Coursework,Ali,JUNIOR
+Task I,Bad priority,,OPEN,high,2026-03-20,School,Coursework,Ali,JUNIOR
+Task J,Negative priority,,OPEN,-1,2026-03-20,School,Coursework,Ali,JUNIOR
+Task K,Missing priority,,OPEN,,2026-03-20,School,Coursework,Ali,JUNIOR
+Task L,Limit test 1,,OPEN,2,2026-03-20,School,Coursework,Sara,SENIOR
+Task M,Limit test 2,,OPEN,2,2026-03-21,School,Coursework,Sara,SENIOR
+Task N,Limit test 3,,OPEN,2,2026-03-22,School,Coursework,Sara,SENIOR
