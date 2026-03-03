@@ -47,6 +47,9 @@ public class Task {
     public void addTag(Tag tag) {
         tags.add(tag);
     }
+    public void addSubTask(SubTask subTask) {
+        subTasks.add(subTask);
+    }
     @Override 
     public boolean equals(Object o) {
         if(this == o) return true;
@@ -108,5 +111,28 @@ public class Task {
 
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
+    }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Task {\n");
+        sb.append("  id=").append(id).append(",\n");
+        sb.append("  title='").append(title).append("',\n");
+        sb.append("  description='").append(description).append("',\n");
+        sb.append("  creationDate=").append(creationDate).append(",\n");
+        sb.append("  priorityLevel=").append(priorityLevel).append(",\n");
+        sb.append("  status=").append(status).append(",\n");
+        sb.append("  dueDate=").append(dueDate).append(",\n");
+
+        sb.append("  tags=").append(tags.size()).append(",\n");
+        sb.append("  subTasks=").append(subTasks.size()).append(",\n");
+        sb.append("  occurrences=").append(taskOccurences.size()).append(",\n");
+
+        sb.append("  recurring=").append(recurrencePattern != null).append("\n");
+
+        sb.append("}");
+
+        return sb.toString();
     }
 }

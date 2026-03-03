@@ -4,18 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.soen342.taskmanager.enums.Category;
+import ca.soen342.taskmanager.enums.Status;
 
 public class Collaborator {
     private String name;
     private int limit;
+    private int assigned;
     private Category category;
     private List<SubTask> subTasks;
     
 
-    public Collaborator(String name, int limit, Category category) {
+    public Collaborator(String name, Category category) {
         this.name = name;
         this.category = category;
         this.subTasks = new ArrayList<>();
+        this.assigned = 0;
         if(category == Category.SENIOR) {
             this.limit = 2;
         }
@@ -27,9 +30,24 @@ public class Collaborator {
             this.limit = 10;
         }
     }
-
     public void addSubTask(SubTask subTask) {
+        if (subTask == null) {
+            throw new IllegalArgumentException("SubTask cannot be null");
+        }
+
+        if (subTask.getStatus() == Status.OPEN && assigned >= limit) {
+            throw new IllegalArgumentException(
+                "Cannot assign subtask: " + subTask.getTitle() +
+                ". Collaborator: " + name +
+                " (" + category + ") already has maximum " + limit + " open subtasks."
+            );
+        }
+
         subTasks.add(subTask);
+
+        if (subTask.getStatus() == Status.OPEN) {
+            assigned++;
+        }
     }
 
     public String getName() {
