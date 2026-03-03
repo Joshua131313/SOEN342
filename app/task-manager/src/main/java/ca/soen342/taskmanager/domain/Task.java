@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import ca.soen342.taskmanager.enums.Frequency;
 import ca.soen342.taskmanager.enums.Status;
 
 
