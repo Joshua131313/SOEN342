@@ -5,20 +5,14 @@ public enum Status {
     COMPLETED,
     CANCELLED;
 
-    public static Status stringToStatus(String status) throws IllegalArgumentException {
-        if(status == null) {
+    public static Status fromString(String status) throws IllegalArgumentException {
+        if (status == null) {
             throw new IllegalArgumentException("Status cannot be null");
         }
-        if(status.toLowerCase().equals("open")) {
-            return OPEN;
-        }
-        else if(status.toLowerCase().equals("completed")) {
-            return COMPLETED;
-        }
-        else if(status.toLowerCase().equals("cancelled")) {
-            return CANCELLED;
-        }
-        else {
+
+        try {
+            return Status.valueOf(status.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid status: " + status);
         }
     }

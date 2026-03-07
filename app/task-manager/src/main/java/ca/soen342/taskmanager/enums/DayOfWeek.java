@@ -9,32 +9,14 @@ public enum DayOfWeek {
     SATURDAY,
     SUNDAY;
 
-    public static DayOfWeek stringToDayOfWeek(String dayOfWeek) throws IllegalArgumentException {
-        if(dayOfWeek == null) {
+    public static DayOfWeek fromString(String dayOfWeek) throws IllegalArgumentException {
+        if (dayOfWeek == null) {
             throw new IllegalArgumentException("Day of week cannot be null");
         }
-        if(dayOfWeek.toLowerCase().equals("monday")) {
-            return MONDAY;
-        }
-        else if(dayOfWeek.toLowerCase().equals("tuesday")) {
-            return TUESDAY;
-        }
-        else if(dayOfWeek.toLowerCase().equals("wednesday")) {
-            return WEDNESDAY;
-        }
-        else if(dayOfWeek.toLowerCase().equals("thursday")) {
-            return THURSDAY;
-        }
-        else if(dayOfWeek.toLowerCase().equals("friday")) {
-            return FRIDAY;
-        }
-        else if(dayOfWeek.toLowerCase().equals("saturday")) {
-            return SATURDAY;
-        }
-        else if(dayOfWeek.toLowerCase().equals("sunday")) {
-            return SUNDAY;
-        }
-        else {
+
+        try {
+            return DayOfWeek.valueOf(dayOfWeek.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid day of week: " + dayOfWeek);
         }
     }

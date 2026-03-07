@@ -4,21 +4,20 @@ public enum Category {
     JUNIOR,
     INTERMEDIATE,
     SENIOR;
+    
+    @Override 
+    public String toString() {
+        return name().toLowerCase();
+    }
 
-    public static Category stringToCategory(String category) throws IllegalArgumentException {
-        if(category == null) {
-            throw new IllegalArgumentException("Status cannot be null");
+    public static Category fromString(String category) throws IllegalArgumentException {
+        if (category == null) {
+            throw new IllegalArgumentException("Category cannot be null");
         }
-        if(category.toLowerCase().equals("junior")) {
-            return JUNIOR;
-        }
-        else if(category.toLowerCase().equals("intermediate")) {
-            return INTERMEDIATE;
-        }
-        else if(category.toLowerCase().equals("senior")) {
-            return SENIOR;
-        }
-        else {
+
+        try {
+            return Category.valueOf(category.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid category: " + category);
         }
     }

@@ -65,7 +65,7 @@ public class CSVTaskService {
                     String taskName = extractColumn(row, Column.TASK_NAME);
                     String description = extractColumn(row, Column.DESCRIPTION);
                     String subTaskStr = extractColumn(row, Column.SUBTASK);
-                    Status status = Status.stringToStatus(extractColumn(row, Column.STATUS));
+                    Status status = Status.fromString(extractColumn(row, Column.STATUS));
                     int priorityLevel = Integer.parseInt(extractColumn(row, Column.PRIORITY));
                     String dueStr = extractColumn(row, Column.DUE_DATE);
                     String projectName = extractColumn(row, Column.PROJECT_NAME);
@@ -87,7 +87,7 @@ public class CSVTaskService {
                             );
                         }
 
-                        collaboratorCategory = Category.stringToCategory(categoryStr);
+                        collaboratorCategory = Category.fromString(categoryStr);
                     } else {
                         if (!categoryStr.isBlank()) {
                             throw new IllegalArgumentException(
