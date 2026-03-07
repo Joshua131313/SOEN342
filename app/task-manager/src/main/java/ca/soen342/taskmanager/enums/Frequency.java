@@ -4,20 +4,15 @@ public enum Frequency {
     DAILY, 
     WEEKLY, 
     MONTHLY;
-    public static Frequency stringToFreequency(String frequency) throws IllegalArgumentException {
-        if(frequency == null) {
+
+    public static Frequency fromString(String frequency) throws IllegalArgumentException {
+        if (frequency == null) {
             throw new IllegalArgumentException("Frequency cannot be null");
         }
-        if(frequency.toLowerCase().equals("daily")) {
-            return DAILY;
-        }
-        else if(frequency.toLowerCase().equals("weekly")) {
-            return WEEKLY;
-        }
-        else if(frequency.toLowerCase().equals("monthly")) {
-            return MONTHLY;
-        }
-        else {
+
+        try {
+            return Frequency.valueOf(frequency.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid frequency: " + frequency);
         }
     }
