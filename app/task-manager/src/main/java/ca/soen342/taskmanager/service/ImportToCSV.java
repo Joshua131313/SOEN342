@@ -15,7 +15,7 @@ import ca.soen342.taskmanager.domain.Task;
 import ca.soen342.taskmanager.enums.Category;
 import ca.soen342.taskmanager.enums.Status;
 
-public class CSVTaskService {
+public class ImportToCSV {
     private static enum Column {
         TASK_NAME("TaskName", 0, false),
         DESCRIPTION("Description", 1, true),
@@ -38,27 +38,35 @@ public class CSVTaskService {
             this.optional = optional;
         }
 
-        public String getName() { return name; }
-        public int getOrder() { return order; }
-        public boolean isOptional() { return optional; }
+        public String getName() {
+            return name;
+        }
+
+        public int getOrder() {
+            return order;
+        }
+
+        public boolean isOptional() {
+            return optional;
+        }
     }
+
     private static String extractColumn(List<String> row, Column column) throws IllegalArgumentException {
         String data = row.get(column.getOrder());
-        if(data.isBlank() && !column.isOptional()) {
+        if (data.isBlank() && !column.isOptional()) {
             throw new IllegalArgumentException("Missing required column: " + column.getName());
         }
         return data;
     }
-    public void exportToCSV() {
-    
-    }
-    public static List<Task> importFromCSV(List<Project> projects, List<Collaborator> collaborators) {
+
+    public static List<Task> importTasks(List<Project> projects, List<Collaborator> collaborators) {
         List<Task> tasks = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File("C:\\Users\\josht\\Documents\\SOEN342\\import-tasks.txt"))) {
-            while(scanner.hasNextLine()) {
+            while (scanner.hasNextLine()) {
                 try {
                     String line = scanner.nextLine();
-                    // ensure that if a field has , inside "" it doesnt split by that , for example descriptioon could be "hello, my name is" -> dont split this comma
+                    // ensure that if a field has , inside "" it doesnt split by that , for example
+                    // descriptioon could be "hello, my name is" -> dont split this comma
                     String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                     List<String> row = Arrays.asList(tokens);
 
@@ -72,86 +80,91 @@ public class CSVTaskService {
                     String projectDescription = extractColumn(row, Column.PROJECT_DESCRIPTION);
                     String collaboratorName = extractColumn(row, Column.COLLABORATOR);
                     String categoryStr = extractColumn(row, Column.COLLABORATOR_CATEGORY);
-                    
+
                     LocalDate dueDate = null;
                     if (!dueStr.isBlank()) {
                         dueDate = LocalDate.parse(dueStr);
-                    }                
-                        
+                    }
+
                     Category collaboratorCategory = null;
 
                     if (!collaboratorName.isBlank()) {
                         if (categoryStr.isBlank()) {
                             throw new IllegalArgumentException(
-                                "Collaborator category missing for: " + collaboratorName
-                            );
+                                    "Collaborator category missing for: " + collaboratorName);
                         }
 
                         collaboratorCategory = Category.fromString(categoryStr);
                     } else {
                         if (!categoryStr.isBlank()) {
                             throw new IllegalArgumentException(
-                                "Category provided without collaborator"
-                            );
+                                    "Category provided without collaborator");
                         }
-                    }// check if subTask is in the row
+                    } // check if subTask is in the row
                     SubTask subTask = null;
-                    if(!subTaskStr.isBlank()) {
+                    if (!subTaskStr.isBlank()) {
                         subTask = new SubTask(subTaskStr, Status.OPEN);
                     }
-                    
-                    //  check if project exists, otherwise create it
+
+                    // check if project exists, otherwise create it
                     Project project = null;
-                    if(!projectName.isBlank()) {
-                        for(Project p : projects) {
-                            if(p.getName().equals(projectName)) {
+                    if (!projectName.isBlank()) {
+                        for (Project p : projects) {
+                            if (p.getName().equals(projectName)) {
                                 project = p;
                             }
                         }
-                        if(project == null) {
+                        if (project == null) {
                             project = new Project(projectName, projectDescription);
                             projects.add(project);
                         }
                     }
                     Collaborator collaborator = null;
-                    if(!collaboratorName.isBlank()) {
-                        for(Collaborator c : collaborators) {
-                            if(c.getName().equals((collaboratorName))) {
+                    if (!collaboratorName.isBlank()) {
+                        for (Collaborator c : collaborators) {
+                            if (c.getName().equals((collaboratorName))) {
                                 collaborator = c;
                             }
                         }
-                        if(collaborator == null) {
+                        if (collaborator == null) {
                             collaborator = new Collaborator(collaboratorName, collaboratorCategory);
                             collaborators.add(collaborator);
                         }
                     }
 
                     Task task = new Task(taskName, description, priorityLevel, status, dueDate);
-                    if(project != null) {
+                    if (project != null) {
                         project.addCollaborator(collaborator);
                         project.addTask(task);
                     }
-                    if(collaborator != null) {
-                        // generic subtask created for collaborator
-                        SubTask collabSubTask = new SubTask("Added to task: " + taskName, Status.OPEN);
+                    if (collaborator != null) {
+                        SubTask collabSubTask;
+
+                        if (subTask != null) {
+                            // Use the CSV subtask
+                            collabSubTask = subTask;
+                            task.addSubTask(collabSubTask);
+                        } else {
+                            // Create the default one if none provided
+                            collabSubTask = new SubTask("Added to task: " + taskName, Status.OPEN);
+                            task.addSubTask(collabSubTask);
+                        }
+
                         collaborator.addSubTask(collabSubTask);
-                        task.addSubTask(collabSubTask);
-                    }
-                    if(subTask != null) {
-                        task.addSubTask(subTask);
+                    } else {
+                        if (subTask != null) {
+                            task.addSubTask(subTask);
+                        }
                     }
                     tasks.add(task);
-                }
-                catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     System.out.println("Skipping row: " + e.getMessage());
-                    continue; // skip this row
-                }
-                catch (DateTimeException e) {
+                    continue; // skip currennt row, has invalid column
+                } catch (DateTimeException e) {
                     // ignore this since date is optional
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
         return tasks;

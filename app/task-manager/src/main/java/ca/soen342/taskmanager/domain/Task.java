@@ -50,6 +50,11 @@ public class Task {
     public void addSubTask(SubTask subTask) {
         subTasks.add(subTask);
     }
+
+    public List<SubTask> getSubTasks() {
+        return subTasks;
+    }
+
     @Override 
     public boolean equals(Object o) {
         if(this == o) return true;

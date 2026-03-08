@@ -6,19 +6,28 @@ import java.util.List;
 import ca.soen342.taskmanager.domain.Collaborator;
 import ca.soen342.taskmanager.domain.Project;
 import ca.soen342.taskmanager.domain.Task;
-import ca.soen342.taskmanager.service.CSVTaskService;
-import ca.soen342.taskmanager.ui.TaskUI;
+import ca.soen342.taskmanager.service.ExportToCSV;
+import ca.soen342.taskmanager.service.ImportToCSV;
 
 public class Main {
+
     public static void main(String[] args) {
-        
-        // TaskUI taskUI = new TaskUI();
-        // taskUI.createTask();
+
         List<Project> projects = new ArrayList<>();
         List<Collaborator> collaborators = new ArrayList<>();
-        List<Task> tasks = CSVTaskService.importFromCSV(projects, collaborators);
-        for(Task task : tasks) {
+
+        // Import tasks
+        List<Task> tasks = ImportToCSV.importTasks(projects, collaborators);
+
+        System.out.println("----- Imported Tasks -----");
+        for (Task task : tasks) {
             System.out.println(task);
         }
+
+        // Export tasks
+        ExportToCSV.exportTasks(tasks, projects, collaborators);
+
+        System.out.println("\n----- Export completed -----");
+        System.out.println("Check export.csv and compare it with the original import file.");
     }
 }
