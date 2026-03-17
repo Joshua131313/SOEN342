@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.soen342.taskmanager.domain.Collaborator;
 import ca.soen342.taskmanager.domain.RecurrencePattern;
+import ca.soen342.taskmanager.domain.SubTask;
 import ca.soen342.taskmanager.domain.Tag;
 import ca.soen342.taskmanager.domain.Task;
 import ca.soen342.taskmanager.domain.TaskOccurrence;
@@ -106,4 +108,24 @@ public class TaskService {
 
     return results;
 }
+
+public void assignCollaborator(Task task, Collaborator collaborator) {
+
+        // 1. Check constraint
+        if (!collaborator.canTakeMoreTasks()) {
+            throw new IllegalStateException(
+                "Cannot assign task: " + collaborator.getName() + " reached limit."
+            );
+        }
+
+        // 2. Create subtask
+        SubTask subtask = new SubTask(
+            "Subtask for " + collaborator.getName(),
+            collaborator
+        );
+
+        // 3. Link both sides
+        task.addSubtask(subtask);
+        collaborator.assignSubtask(subtask);
+    }
 }
