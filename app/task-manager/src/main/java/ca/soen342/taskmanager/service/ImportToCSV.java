@@ -61,7 +61,7 @@ public class ImportToCSV {
 
     public static List<Task> importTasks(List<Project> projects, List<Collaborator> collaborators) {
         List<Task> tasks = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File("C:\\Users\\josht\\Documents\\SOEN342\\import-tasks.txt"))) {
+        try (Scanner scanner = new Scanner(new File("/Users/micolosloso/Documents/GitHub/SOEN-342/import-tasks.txt"))) {
             while (scanner.hasNextLine()) {
                 try {
                     String line = scanner.nextLine();

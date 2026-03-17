@@ -1,6 +1,7 @@
 package ca.soen342.taskmanager.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.soen342.taskmanager.domain.RecurrencePattern;
@@ -69,4 +70,40 @@ public class TaskService {
 
         return t;
     }
+    public static List<Task> searchTasks(
+        List<Task> tasks,
+        String titleKeyword,
+        Status status,
+        LocalDate dueDate,
+        Integer priorityLevel
+) {
+    List<Task> results = new ArrayList<>();
+
+    for (Task task : tasks) {
+
+        boolean match = true;
+
+        if (titleKeyword != null && !task.getTitle().toLowerCase().contains(titleKeyword.toLowerCase())) {
+            match = false;
+        }
+
+        if (status != null && task.getStatus() != status) {
+            match = false;
+        }
+
+        if (dueDate != null && !task.getDueDate().equals(dueDate)) {
+            match = false;
+        }
+
+        if (priorityLevel != null && task.getPriorityLevel() != priorityLevel) {
+            match = false;
+        }
+
+        if (match) {
+            results.add(task);
+        }
+    }
+
+    return results;
+}
 }
