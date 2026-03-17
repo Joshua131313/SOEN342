@@ -51,33 +51,33 @@ public class Main {
             System.out.println(task);
         }
 
-System.out.println("\n--- Collaborator Assignment Test ---");
+        System.out.println("\n--- Collaborator Assignment Test ---");
 
-if (!tasks.isEmpty()) {
+        if (!tasks.isEmpty()) {
 
-    Task testTask = tasks.get(0);
+            Task testTask = tasks.get(0);
 
-    // Create collaborator
-    Collaborator collab = new Collaborator("Alice", ca.soen342.taskmanager.enums.Category.JUNIOR);
+            // Create collaborator
+            Collaborator collab = new Collaborator("Alice", ca.soen342.taskmanager.enums.Category.JUNIOR);
 
-    TagsService tagsService = new TagsService();
-    TaskService service = new TaskService(tagsService);
+            TagsService tagsService = new TagsService();
+            TaskService service = new TaskService(tagsService);
 
-    try {
-        service.assignCollaborator(testTask, collab);
-        service.assignCollaborator(testTask, collab); // assign twice
+            try {
+                service.assignCollaborator(testTask, collab);
+                service.assignCollaborator(testTask, collab); // assign twice
 
-        System.out.println("Subtasks created: " + testTask.getSubTasks().size());
+                System.out.println("Subtasks created: " + testTask.getSubTasks().size());
 
-        // Complete one subtask
-        testTask.getSubTasks().get(0).complete();
+                // Complete one subtask
+                testTask.getSubTasks().get(0).complete();
 
-        System.out.println("Task progress: " + testTask.getProgress());
-        System.out.println("Task status (should still be OPEN): " + testTask.getStatus());
+                System.out.println("Task progress: " + testTask.getProgress());
+                System.out.println("Task status (should still be OPEN): " + testTask.getStatus());
 
-    } catch (Exception e) {
-        System.out.println("Error: " + e.getMessage());
-    }
-}
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
     }
 }

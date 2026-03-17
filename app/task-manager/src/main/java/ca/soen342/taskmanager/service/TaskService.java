@@ -115,23 +115,23 @@ public class TaskService {
     return results;
 }
 
-public void assignCollaborator(Task task, Collaborator collaborator) {
+    public void assignCollaborator(Task task, Collaborator collaborator) {
 
-        // 1. Check constraint
-        if (!collaborator.canTakeMoreTasks()) {
-            throw new IllegalStateException(
-                "Cannot assign task: " + collaborator.getName() + " reached limit."
+            // 1. Check constraint
+            if (!collaborator.canTakeMoreTasks()) {
+                throw new IllegalStateException(
+                    "Cannot assign task: " + collaborator.getName() + " reached limit."
+                );
+            }
+
+            // 2. Create subtask
+            SubTask subtask = new SubTask(
+                "Subtask for " + collaborator.getName(),
+                collaborator
             );
+
+            // 3. Link both sides
+            task.addSubtask(subtask);
+            collaborator.assignSubtask(subtask);
         }
-
-        // 2. Create subtask
-        SubTask subtask = new SubTask(
-            "Subtask for " + collaborator.getName(),
-            collaborator
-        );
-
-        // 3. Link both sides
-        task.addSubtask(subtask);
-        collaborator.assignSubtask(subtask);
-    }
 }
