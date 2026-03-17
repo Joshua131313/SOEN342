@@ -50,6 +50,31 @@ public class Collaborator {
         }
     }
 
+    public boolean canTakeMoreTasks() {
+        int openTasks = 0;
+
+        for (SubTask s : subTasks) {
+            if (s.getStatus() != Status.COMPLETED) {
+                openTasks++;
+            }
+        }
+
+        switch (category) {
+            case JUNIOR:
+                return openTasks < 10;
+            case INTERMEDIATE:
+                return openTasks < 5;
+            case SENIOR:
+                return openTasks < 2;
+            default:
+                return true;
+        }
+    }
+
+    public void assignSubtask(SubTask subtask) {
+        subTasks.add(subtask);
+    }
+
     public String getName() {
         return name;
     }

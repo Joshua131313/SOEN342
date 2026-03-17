@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 import ca.soen342.taskmanager.enums.Status;
+import ca.soen342.taskmanager.enums.Category;
+import ca.soen342.taskmanager.domain.Collaborator;
+import ca.soen342.taskmanager.enums.Status;
 
 
 public class Task {
@@ -37,6 +40,25 @@ public class Task {
         this.taskOccurences = new ArrayList<>();
         this.activityEntry = new ArrayList<>();
         this.subTasks = new ArrayList<>();
+    }
+
+    public void addSubtask(SubTask subTask) {
+        subTasks.add(subTask);
+    }
+
+    
+    public double getProgress() {
+        if (subTasks.isEmpty()) return 0;
+
+        int completed = 0;
+
+        for (SubTask s : subTasks) {
+            if (s.getStatus() == Status.COMPLETED) {
+                completed++;
+            }
+        }
+
+        return (double) completed / subTasks.size();
     }
     public void setRecurrencePattern(RecurrencePattern recurrencePattern) {
         this.recurrencePattern = recurrencePattern;
