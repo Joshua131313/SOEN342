@@ -79,6 +79,12 @@ public class TaskService {
         LocalDate dueDate,
         Integer priorityLevel
 ) {
+    if (titleKeyword == null && status == null && dueDate == null && priorityLevel == null) {
+    return tasks.stream()
+        .filter(t -> t.getStatus() == Status.OPEN)
+        .sorted((a, b) -> a.getDueDate().compareTo(b.getDueDate()))
+        .collect(java.util.stream.Collectors.toList());
+}
     List<Task> results = new ArrayList<>();
 
     for (Task task : tasks) {
