@@ -6,5 +6,5 @@ SOEN342 project
 | Joshua Bitton*| 40273378   | Joshua131313|
 | Mico Losloso | 40314038   | MicoLosloso |
 | Selma Bédoui | 40315053   | selmabeds   |
-* = Team Lead
+"*" = Team Lead
 
