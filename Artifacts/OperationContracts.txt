@@ -4,7 +4,7 @@ Contract CO1
 Operation: createTask(title, description, priority, Status, dueDate)
 Cross References: Use Case: Create Task
 Preconditions: 
-    - title exists.
+    - Title exists.
     - If dueDate is not null, dueDate is not in the past.
 Postconditions:
     - A Task instance t was created. (instance creation)
@@ -50,9 +50,9 @@ Contract CO5
 Operation: searchTasks(keywords)
 Cross References: Use Case: Search Tasks 
 Preconditions: 
-    - keywords exists in at least one Task instance.
+    - None (keywords can be null).
 Postconditions:
-    - List of Task instances that correspond to keywords is returned to the user. (No state change)
+    - List of Task instances that correspond to keywords is returned to the user or returned null if there is no match. (No state change)
 
 Contract CO6
 Operation: createProject(title, description)
