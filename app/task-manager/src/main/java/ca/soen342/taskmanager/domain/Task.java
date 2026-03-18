@@ -63,7 +63,14 @@ public class Task {
         this.recurrencePattern = recurrencePattern;
     }
     public void addOccurrence(TaskOccurrence occurrence) {
-        taskOccurences.add(occurrence);
+    for (TaskOccurrence existingOccurrence : taskOccurences) {
+        if (existingOccurrence.getDueDate().equals(occurrence.getDueDate())) {
+            throw new IllegalArgumentException(
+                "An occurrence already exists for this task on " + occurrence.getDueDate()
+            );
+        }
+    }
+    taskOccurences.add(occurrence);
     }
     public void addTag(Tag tag) {
         tags.add(tag);
