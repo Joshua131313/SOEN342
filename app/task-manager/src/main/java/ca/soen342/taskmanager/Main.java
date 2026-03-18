@@ -11,6 +11,8 @@ import ca.soen342.taskmanager.service.ExportToCSV;
 import ca.soen342.taskmanager.service.ImportToCSV;
 import ca.soen342.taskmanager.service.TagsService;
 import ca.soen342.taskmanager.service.TaskService;
+import java.time.LocalDate;
+import ca.soen342.taskmanager.enums.Frequency;
 
 public class Main {
 
@@ -50,6 +52,29 @@ public class Main {
         for (Task task : resultsByStatus) {
             System.out.println(task);
         }
+        // --- Recurring Task Test ---
+        System.out.println("\n--- Recurring Task Test ---");
+
+        TagsService tagsService = new TagsService();
+        TaskService service = new TaskService(tagsService);
+
+        Task recurringTask = service.createRecurringTask(
+                "Water Plants",
+                "Plant care",
+                1,
+                Status.OPEN,
+                java.time.LocalDate.of(2026, 3, 1),
+                List.of(),
+                ca.soen342.taskmanager.enums.Frequency.DAILY,
+                2, // every 2 days
+                java.time.LocalDate.of(2026, 3, 1),
+                java.time.LocalDate.of(2026, 3, 7),
+                null,
+                null
+        );
+
+        System.out.println(recurringTask);
+
 
         System.out.println("\n--- Collaborator Assignment Test ---");
 
@@ -59,9 +84,6 @@ public class Main {
 
             // Create collaborator
             Collaborator collab = new Collaborator("Alice", ca.soen342.taskmanager.enums.Category.JUNIOR);
-
-            TagsService tagsService = new TagsService();
-            TaskService service = new TaskService(tagsService);
 
             try {
                 service.assignCollaborator(testTask, collab);
