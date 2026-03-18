@@ -8,7 +8,6 @@ import java.util.UUID;
 import ca.soen342.taskmanager.enums.Status;
 import ca.soen342.taskmanager.enums.Category;
 import ca.soen342.taskmanager.domain.Collaborator;
-import ca.soen342.taskmanager.enums.Status;
 
 
 public class Task {
@@ -161,5 +160,16 @@ public class Task {
         sb.append("}");
 
         return sb.toString();
+    }
+
+    public void completeOccurrence(LocalDate dueDate) {
+        for (TaskOccurrence occurrence : taskOccurences) {
+            if (occurrence.getDueDate().equals(dueDate)) {
+                occurrence.markCompleted();
+                return;
+            }
+        }
+
+        throw new IllegalArgumentException("Occurrence not found for due date: " + dueDate);
     }
 }
