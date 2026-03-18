@@ -16,7 +16,7 @@ Operation: updateTask(taskID, updatedValues)
 Cross References: Use Case: Update Task 
 Preconditions: 
 Task instance t with taskID exists.
-updatesValues contains at least one attribute to modify.
+updatedValues contains at least one attribute to modify.
     - If title is a modified attribute, it is not getting modified to Null.
     - If status is a modified attribute, it is open, completed, or cancelled. 
 Postconditions:
@@ -93,8 +93,7 @@ Preconditions:
     - Title exists (not empty)
 Postconditions:
     - SubTask instance s is created (Instance creation)
-    - Title attribute s.title is set to title (Attribute modification)
-    - Status attribute is set to “open” (Attribute modification)
+    - Subtask instance s is added to the Tasks Database (Association formed).
 
 Contract CO10
 Operation: assignSubTask(subtaskID, taskID)
