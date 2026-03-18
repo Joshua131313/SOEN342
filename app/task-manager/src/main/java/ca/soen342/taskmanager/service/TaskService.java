@@ -67,8 +67,20 @@ public class TaskService {
                 dayOfMonth);
 
         t.setRecurrencePattern(pattern);
-        TaskOccurrence occurrence = new TaskOccurrence(dueDate, Status.OPEN);
-        t.addOccurrence(occurrence);
+        addTags(t, tags);
+
+        List<LocalDate> occurrenceDates = generateOccurrenceDates(
+                frequency,
+                interval,
+                start,
+                end,
+                weekDays,
+                dayOfMonth);
+
+        for (LocalDate occurrenceDate : occurrenceDates) {
+            TaskOccurrence occurrence = new TaskOccurrence(occurrenceDate, Status.OPEN);
+            t.addOccurrence(occurrence);
+        }
 
         return t;
     }
@@ -133,5 +145,87 @@ public class TaskService {
             // 3. Link both sides
             task.addSubtask(subtask);
             collaborator.assignSubtask(subtask);
+    }
+
+    private List<LocalDate> generateOccurrenceDates(
+        Frequency frequency,
+        int interval,
+        LocalDate start,
+        LocalDate end,
+        List<DayOfWeek> weekDays,
+        Integer dayOfMonth) {
+
+    List<LocalDate> dates = new ArrayList<>();
+
+    if (start == null || end == null || start.isAfter(end)) {
+        return dates;
+    }
+
+    if (interval <= 0) {
+        interval = 1;
+    }
+
+    if (frequency == Frequency.DAILY) {
+        LocalDate currentDate = start;
+
+        while (!currentDate.isAfter(end)) {
+            dates.add(currentDate);
+            currentDate = currentDate.plusDays(interval);
         }
+    } else if (frequency == Frequency.WEEKLY) {
+        LocalDate currentDate = start;
+
+        while (!currentDate.isAfter(end)) {
+            if (weekDays != null && weekDays.contains(convertJavaDayToCustomDay(currentDate))) {
+                long weeksBetween = java.time.temporal.ChronoUnit.WEEKS.between(start, currentDate);
+                if (weeksBetween % interval == 0) {
+                    dates.add(currentDate);
+                }
+            }
+            currentDate = currentDate.plusDays(1);
+        }
+    } else if (frequency == Frequency.MONTHLY) {
+        LocalDate currentMonth = start.withDayOfMonth(1);
+
+        while (!currentMonth.isAfter(end.withDayOfMonth(1))) {
+            if (dayOfMonth != null && dayOfMonth <= currentMonth.lengthOfMonth()) {
+                LocalDate occurrenceDate = currentMonth.withDayOfMonth(dayOfMonth);
+
+                if (!occurrenceDate.isBefore(start) && !occurrenceDate.isAfter(end)) {
+                    dates.add(occurrenceDate);
+                }
+            }
+
+            currentMonth = currentMonth.plusMonths(interval);
+        }
+    }
+
+    return dates;
+    }
+
+    //Overwrite Java DayOfWeek to enable comparison
+    private DayOfWeek convertJavaDayToCustomDay(LocalDate date) {
+    java.time.DayOfWeek javaDay = date.getDayOfWeek();
+
+    switch (javaDay) {
+        case MONDAY:
+            return DayOfWeek.MONDAY;
+        case TUESDAY:
+            return DayOfWeek.TUESDAY;
+        case WEDNESDAY:
+            return DayOfWeek.WEDNESDAY;
+        case THURSDAY:
+            return DayOfWeek.THURSDAY;
+        case FRIDAY:
+            return DayOfWeek.FRIDAY;
+        case SATURDAY:
+            return DayOfWeek.SATURDAY;
+        case SUNDAY:
+            return DayOfWeek.SUNDAY;
+        default:
+            throw new IllegalArgumentException("Invalid day");
+    }
+}
+
+
 }
