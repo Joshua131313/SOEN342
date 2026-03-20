@@ -63,12 +63,12 @@ public class Main {
                 "Plant care",
                 1,
                 Status.OPEN,
-                java.time.LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 1),
                 List.of(),
-                ca.soen342.taskmanager.enums.Frequency.DAILY,
-                2, // every 2 days
-                java.time.LocalDate.of(2026, 3, 1),
-                java.time.LocalDate.of(2026, 3, 7),
+                Frequency.DAILY,
+                2,
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 7),
                 null,
                 null
         );
