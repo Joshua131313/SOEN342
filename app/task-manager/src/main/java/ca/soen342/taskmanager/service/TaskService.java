@@ -176,7 +176,9 @@ public class TaskService {
         LocalDate currentDate = start;
 
         while (!currentDate.isAfter(end)) {
-            if (weekDays != null && weekDays.contains(convertJavaDayToCustomDay(currentDate))) {
+            DayOfWeek currentDay = DayOfWeek.fromString(currentDate.getDayOfWeek().name());
+
+            if (weekDays != null && weekDays.contains(currentDay)) {
                 long weeksBetween = java.time.temporal.ChronoUnit.WEEKS.between(start, currentDate);
                 if (weeksBetween % interval == 0) {
                     dates.add(currentDate);
@@ -203,29 +205,6 @@ public class TaskService {
     return dates;
     }
 
-    //Overwrite Java DayOfWeek to enable comparison
-    private DayOfWeek convertJavaDayToCustomDay(LocalDate date) {
-    java.time.DayOfWeek javaDay = date.getDayOfWeek();
-
-    switch (javaDay) {
-        case MONDAY:
-            return DayOfWeek.MONDAY;
-        case TUESDAY:
-            return DayOfWeek.TUESDAY;
-        case WEDNESDAY:
-            return DayOfWeek.WEDNESDAY;
-        case THURSDAY:
-            return DayOfWeek.THURSDAY;
-        case FRIDAY:
-            return DayOfWeek.FRIDAY;
-        case SATURDAY:
-            return DayOfWeek.SATURDAY;
-        case SUNDAY:
-            return DayOfWeek.SUNDAY;
-        default:
-            throw new IllegalArgumentException("Invalid day");
-    }
-}
 
 
 }
