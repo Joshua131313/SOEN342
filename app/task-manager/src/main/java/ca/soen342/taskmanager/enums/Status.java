@@ -7,13 +7,16 @@ public enum Status {
 
     public static Status fromString(String status) throws IllegalArgumentException {
         if (status == null) {
-            throw new IllegalArgumentException("Status cannot be null");
+            throw new IllegalArgumentException("- Status cannot be null");
         }
 
         try {
             return Status.valueOf(status.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid status: " + status);
+            throw new IllegalArgumentException(
+                "- Invalid status: " + status + "\n" +
+                "- Valid Statuses: Open, Completed, Cancelled"
+            );
         }
     }
 }

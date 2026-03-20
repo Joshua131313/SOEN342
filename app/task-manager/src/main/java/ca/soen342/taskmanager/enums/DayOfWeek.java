@@ -11,13 +11,16 @@ public enum DayOfWeek {
 
     public static DayOfWeek fromString(String dayOfWeek) throws IllegalArgumentException {
         if (dayOfWeek == null) {
-            throw new IllegalArgumentException("Day of week cannot be null");
+            throw new IllegalArgumentException("- Day of week cannot be null");
         }
 
         try {
             return DayOfWeek.valueOf(dayOfWeek.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid day of week: " + dayOfWeek);
+            throw new IllegalArgumentException(
+                "- Invalid day of week: " + dayOfWeek + "\n" +
+                "- Valid days: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday"
+            );
         }
     }
 }

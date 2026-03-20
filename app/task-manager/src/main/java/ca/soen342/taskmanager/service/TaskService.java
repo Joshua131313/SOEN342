@@ -132,7 +132,7 @@ public class TaskService {
             // 1. Check constraint
             if (!collaborator.canTakeMoreTasks()) {
                 throw new IllegalStateException(
-                    "Cannot assign task: " + collaborator.getName() + " reached limit."
+                    "- Cannot assign task: " + collaborator.getName() + " reached limit."
                 );
             }
 
