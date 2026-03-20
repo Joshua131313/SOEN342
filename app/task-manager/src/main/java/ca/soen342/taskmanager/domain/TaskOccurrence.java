@@ -18,4 +18,9 @@ public class TaskOccurrence {
     public LocalDate getDueDate() {
         return dueDate;
     }
+
+    public void markCompleted() {
+    this.status = Status.COMPLETED;
+    this.completedAt = LocalDate.now();
+    }
 }

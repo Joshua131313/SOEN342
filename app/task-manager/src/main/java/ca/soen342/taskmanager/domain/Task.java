@@ -8,7 +8,6 @@ import java.util.UUID;
 import ca.soen342.taskmanager.enums.Status;
 import ca.soen342.taskmanager.enums.Category;
 import ca.soen342.taskmanager.domain.Collaborator;
-import ca.soen342.taskmanager.enums.Status;
 
 
 public class Task {
@@ -64,7 +63,14 @@ public class Task {
         this.recurrencePattern = recurrencePattern;
     }
     public void addOccurrence(TaskOccurrence occurrence) {
-        taskOccurences.add(occurrence);
+    for (TaskOccurrence existingOccurrence : taskOccurences) {
+        if (existingOccurrence.getDueDate().equals(occurrence.getDueDate())) {
+            throw new IllegalArgumentException(
+                "An occurrence already exists for this task on " + occurrence.getDueDate()
+            );
+        }
+    }
+    taskOccurences.add(occurrence);
     }
     public void addTag(Tag tag) {
         tags.add(tag);
@@ -161,5 +167,16 @@ public class Task {
         sb.append("}");
 
         return sb.toString();
+    }
+
+    public void completeOccurrence(LocalDate dueDate) {
+        for (TaskOccurrence occurrence : taskOccurences) {
+            if (occurrence.getDueDate().equals(dueDate)) {
+                occurrence.markCompleted();
+                return;
+            }
+        }
+
+        throw new IllegalArgumentException("Occurrence not found for due date: " + dueDate);
     }
 }
