@@ -12,13 +12,16 @@ public enum Category {
 
     public static Category fromString(String category) throws IllegalArgumentException {
         if (category == null) {
-            throw new IllegalArgumentException("Category cannot be null");
+            throw new IllegalArgumentException("- Category cannot be null");
         }
 
         try {
             return Category.valueOf(category.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid category: " + category);
+            throw new IllegalArgumentException(
+                "- Invalid category: " + category + "\n" +
+                "- Valid categories: Junior, Intermediate, Senior"
+            );
         }
     }
 }

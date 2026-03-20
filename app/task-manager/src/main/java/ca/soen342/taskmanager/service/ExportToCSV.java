@@ -73,11 +73,14 @@ public class ExportToCSV {
         return writeRow(task, project, null, null);
     }
 
-    public static void exportTasks(List<Task> tasks,
+    public static void exportTasks(
+            String filePath,
+            List<Task> tasks,
             List<Project> projects,
-            List<Collaborator> collaborators) {
+            List<Collaborator> collaborators
+        ) {
 
-        try (FileWriter writer = new FileWriter("export.csv")) {
+        try (FileWriter writer = new FileWriter(filePath)) {
             // write the columns to the export files
             writer.write(
                     "TaskName,Description,Subtask,Status,Priority,DueDate,ProjectName,ProjectDescription,Collaborator,CollaboratorCategory\n");
@@ -104,10 +107,10 @@ public class ExportToCSV {
                 }
             }
 
-            System.out.println("Export completed: export.csv");
+            System.out.println("- Export completed at path: " + filePath);
 
         } catch (IOException e) {
-            System.out.println("Error exporting CSV: " + e.getMessage());
+            System.out.println("- Error exporting CSV: " + e.getMessage());
         }
     }
 }

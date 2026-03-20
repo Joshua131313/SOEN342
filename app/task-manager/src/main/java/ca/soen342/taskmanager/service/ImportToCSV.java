@@ -54,14 +54,19 @@ public class ImportToCSV {
     private static String extractColumn(List<String> row, Column column) throws IllegalArgumentException {
         String data = row.get(column.getOrder());
         if (data.isBlank() && !column.isOptional()) {
-            throw new IllegalArgumentException("Missing required column: " + column.getName());
+            throw new IllegalArgumentException("- Missing required column: " + column.getName());
         }
         return data;
     }
 
-    public static List<Task> importTasks(List<Project> projects, List<Collaborator> collaborators) {
+    public static List<Task> importTasks(String filePath, List<Project> projects, List<Collaborator> collaborators) {
         List<Task> tasks = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File("/Users/micolosloso/Documents/GitHub/SOEN-342/import-tasks.txt"))) {
+        int currentRow = 1;
+        int skippedRows = 0;
+        if(currentRow == 1) {
+            System.out.println("Import Log");
+        }
+        try (Scanner scanner = new Scanner(new File(filePath))) {
             while (scanner.hasNextLine()) {
                 try {
                     String line = scanner.nextLine();
@@ -91,14 +96,14 @@ public class ImportToCSV {
                     if (!collaboratorName.isBlank()) {
                         if (categoryStr.isBlank()) {
                             throw new IllegalArgumentException(
-                                    "Collaborator category missing for: " + collaboratorName);
+                                    "- Collaborator category missing for: " + collaboratorName);
                         }
 
                         collaboratorCategory = Category.fromString(categoryStr);
                     } else {
                         if (!categoryStr.isBlank()) {
                             throw new IllegalArgumentException(
-                                    "Category provided without collaborator");
+                                    "- Category provided without collaborator");
                         }
                     } // check if subTask is in the row
                     SubTask subTask = null;
@@ -157,8 +162,15 @@ public class ImportToCSV {
                         }
                     }
                     tasks.add(task);
+                    currentRow++;
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Skipping row: " + e.getMessage());
+                    System.out.println(
+                        "----------------------------------------\n" +
+                        "- Skipping row: " + currentRow + " \n" + 
+                         e.getMessage() + "\n" +
+                        "----------------------------------------\n"
+                    );
+                    skippedRows++;
                     continue; // skip currennt row, has invalid column
                 } catch (DateTimeException e) {
                     // ignore this since date is optional
@@ -167,6 +179,7 @@ public class ImportToCSV {
         } catch (Exception e) {
 
         }
+        System.out.println(skippedRows + (skippedRows == 1 ? " task was " : " tasks were ") + "not imported.");
         return tasks;
     }
 }

@@ -7,13 +7,16 @@ public enum Frequency {
 
     public static Frequency fromString(String frequency) throws IllegalArgumentException {
         if (frequency == null) {
-            throw new IllegalArgumentException("Frequency cannot be null");
+            throw new IllegalArgumentException("- Frequency cannot be null");
         }
 
         try {
             return Frequency.valueOf(frequency.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid frequency: " + frequency);
+            throw new IllegalArgumentException(
+                "- Invalid frequency: " + frequency + "\n" +
+                "- Valid frequencies: Daily, Weekly, Monthly"
+            );
         }
     }
 }
