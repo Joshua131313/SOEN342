@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import ca.soen342.taskmanager.enums.Status;
-import ca.soen342.taskmanager.enums.Category;
-import ca.soen342.taskmanager.domain.Collaborator;
-
 
 public class Task {
 
@@ -45,9 +42,9 @@ public class Task {
         subTasks.add(subTask);
     }
 
-    
     public double getProgress() {
-        if (subTasks.isEmpty()) return 0;
+        if (subTasks.isEmpty())
+            return 0;
 
         int completed = 0;
 
@@ -59,22 +56,25 @@ public class Task {
 
         return (double) completed / subTasks.size();
     }
+
     public void setRecurrencePattern(RecurrencePattern recurrencePattern) {
         this.recurrencePattern = recurrencePattern;
     }
+
     public void addOccurrence(TaskOccurrence occurrence) {
-    for (TaskOccurrence existingOccurrence : taskOccurences) {
-        if (existingOccurrence.getDueDate().equals(occurrence.getDueDate())) {
-            throw new IllegalArgumentException(
-                "An occurrence already exists for this task on " + occurrence.getDueDate()
-            );
+        for (TaskOccurrence existingOccurrence : taskOccurences) {
+            if (existingOccurrence.getDueDate().equals(occurrence.getDueDate())) {
+                throw new IllegalArgumentException(
+                        "- An occurrence already exists for this task on " + occurrence.getDueDate());
+            }
         }
+        taskOccurences.add(occurrence);
     }
-    taskOccurences.add(occurrence);
-    }
+
     public void addTag(Tag tag) {
         tags.add(tag);
     }
+
     public void addSubTask(SubTask subTask) {
         subTasks.add(subTask);
     }
@@ -83,17 +83,21 @@ public class Task {
         return subTasks;
     }
 
-    @Override 
+    @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(!(o instanceof Task)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Task))
+            return false;
         Task task = (Task) o;
         return id != null && id.equals(task.id);
     }
+
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
     public UUID getId() {
         return id;
     }
@@ -145,28 +149,21 @@ public class Task {
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Task {\n");
-        sb.append("  id=").append(id).append(",\n");
-        sb.append("  title='").append(title).append("',\n");
-        sb.append("  description='").append(description).append("',\n");
-        sb.append("  creationDate=").append(creationDate).append(",\n");
-        sb.append("  priorityLevel=").append(priorityLevel).append(",\n");
-        sb.append("  status=").append(status).append(",\n");
-        sb.append("  dueDate=").append(dueDate).append(",\n");
-
-        sb.append("  tags=").append(tags.size()).append(",\n");
-        sb.append("  subTasks=").append(subTasks.size()).append(",\n");
-        sb.append("  occurrences=").append(taskOccurences.size()).append(",\n");
-
-        sb.append("  recurring=").append(recurrencePattern != null).append("\n");
-
-        sb.append("}");
-
-        return sb.toString();
+        return "Task\n" +
+                "  id: " + id + ",\n" +
+                "  title: " + title + ",\n" +
+                "  description: " + description + ",\n" +
+                "  creationDate: " + creationDate + ",\n" +
+                "  priorityLevel: " + priorityLevel + ",\n" +
+                "  status: " + status + ",\n" +
+                "  dueDate: " + dueDate + ",\n" +
+                "  tags: " + tags.size() + ",\n" +
+                "  subTasks: " + subTasks.size() + ",\n" +
+                "  occurrences: " + taskOccurences.size() + ",\n" +
+                "  recurring: " + (recurrencePattern != null) + "\n";
     }
 
     public void completeOccurrence(LocalDate dueDate) {
@@ -177,6 +174,6 @@ public class Task {
             }
         }
 
-        throw new IllegalArgumentException("Occurrence not found for due date: " + dueDate);
+        throw new IllegalArgumentException("- Occurrence not found for due date: " + dueDate);
     }
 }
