@@ -8,6 +8,7 @@ import ca.soen342.taskmanager.enums.Frequency;
 import ca.soen342.taskmanager.enums.Status;
 import ca.soen342.taskmanager.service.TagsService;
 import ca.soen342.taskmanager.service.TaskService;
+import ca.soen342.taskmanager.domain.Task;
 
 public class TaskUI {
     private TagsService tagsService;
@@ -20,7 +21,7 @@ public class TaskUI {
         input  = new InputHelper();
     }
 
-    public void createTask() {
+    public Task createTask() {
         String title = input.askString("Enter task title: ");
         String description = input.askString("Enter a description: ");
         int priorityLevel = input.askInt("Enter priority level: ");
@@ -44,7 +45,7 @@ public class TaskUI {
                 dayOfMonth = input.askDayOfMonth("Enter day of month (1-31): ");
             }
 
-            taskService.createRecurringTask(
+            return taskService.createRecurringTask(
                 title, 
                 description, 
                 priorityLevel, 
@@ -60,7 +61,7 @@ public class TaskUI {
             );
         }
         else {
-            taskService.createTask(title, description, priorityLevel, status, dueDate, tags);
+            return taskService.createTask(title, description, priorityLevel, status, dueDate, tags);
         }
     }
 }

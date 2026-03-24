@@ -57,8 +57,10 @@ public class Main {
                 }
 
                 case 3 -> {
-                    // Create Task
-                    taskUI.createTask();
+                // Create a task through the UI + store in CLI task list
+                Task createdTask = taskUI.createTask();
+                tasks.add(createdTask);
+                System.out.println("Task created successfully.");
                 }
 
                 case 4 -> {
@@ -90,12 +92,24 @@ public class Main {
                         System.out.println("No tasks available.");
                         break;
                     }
+
                     Task task = selectTask(tasks);
+
                     System.out.println("Enter collaborator name:");
                     String name = scanner.nextLine();
-                    System.out.println("Enter category (JUNIOR, INTERMEDIATE, SENIOR):");
-                    Category category = Category.valueOf(scanner.nextLine().toUpperCase());
-                    Collaborator collaborator = new Collaborator(name, category);
+
+                    // Try to reuse an existing collaborator so their open-task count is preserved
+                    Collaborator collaborator = findCollaboratorByName(collaborators, name);
+
+                    // Only ask for category if this is a brand new collaborator
+                    if (collaborator == null) {
+                        System.out.println("Enter category (JUNIOR, INTERMEDIATE, SENIOR):");
+                        Category category = Category.valueOf(scanner.nextLine().toUpperCase());
+
+                        collaborator = new Collaborator(name, category);
+                        collaborators.add(collaborator);
+                    }
+
                     try {
                         taskService.assignCollaborator(task, collaborator);
                         System.out.println("Collaborator assigned.");
@@ -103,7 +117,7 @@ public class Main {
                         System.out.println("Error: " + e.getMessage());
                     }
                 }
-
+                
                 case 6 -> {
                     // View all tasks
                     System.out.println("\n--- All tasks ---");
@@ -146,5 +160,15 @@ public class Main {
 
         int index = getIntInput("Enter index: ");
         return tasks.get(index);
+    }
+
+    // Reuse the same collaborator object so task limits are tracked correctly
+    private static Collaborator findCollaboratorByName(List<Collaborator> collaborators, String name) {
+        for (Collaborator collaborator : collaborators) {
+            if (collaborator.getName().equalsIgnoreCase(name)) {
+                return collaborator;
+            }
+        }
+        return null;
     }
 }
