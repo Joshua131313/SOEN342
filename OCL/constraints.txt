@@ -1,0 +1,12 @@
+context Task:
+    inv: self.subTasks -> size() <= 20;
+
+context TasksDB:
+    inv: self.tasks -> select(t | t.dueDate = null and t.status = Status::open) -> size() <= 50
+context Collaborator
+    inv LimitPerCategory:
+        (self.category = Category::Junior implies self.limit = 10) and
+        (self.category = Category::Intermediate implies self.limit = 5) and
+        (self.category = Category::Senior implies self.limit = 2)
+    inv PositiveLimit:
+        self.limit > 0;
