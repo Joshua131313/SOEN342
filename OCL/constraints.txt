@@ -10,3 +10,5 @@ context Collaborator
         (self.category = Category::Senior implies self.limit = 2)
     inv PositiveLimit:
         self.limit > 0;
+    inv NotOverloaded:
+        self.assignedTasks->select(t | t.status = Status::OPEN)->size() <= self.limit
