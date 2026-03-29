@@ -11,15 +11,6 @@ import ca.soen342.taskmanager.domain.Task;
 
 public class ExportToCSV {
 
-    private static Project getProjectOfTask(Task task, List<Project> projects) {
-        for (Project project : projects) {
-            if (project.getTasks().contains(task)) {
-                return project;
-            }
-        }
-        return null;
-    }
-
     private static Collaborator getCollaboratorOfSubTask(SubTask subTask, List<Collaborator> collaborators) {
         for (Collaborator collaborator : collaborators) {
             if (collaborator.getSubTasks().contains(subTask)) {
@@ -76,7 +67,6 @@ public class ExportToCSV {
     public static void exportTasks(
             String filePath,
             List<Task> tasks,
-            List<Project> projects,
             List<Collaborator> collaborators
         ) {
 
@@ -87,7 +77,7 @@ public class ExportToCSV {
 
             for (Task task : tasks) {
 
-                Project project = getProjectOfTask(task, projects);
+                Project project = task.getProject();
                 List<SubTask> subTasks = task.getSubTasks();
 
                 if (subTasks.isEmpty()) {
