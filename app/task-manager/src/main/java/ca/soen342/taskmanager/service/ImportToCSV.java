@@ -141,6 +141,7 @@ public class ImportToCSV {
                     if (project != null) {
                         project.addCollaborator(collaborator);
                         project.addTask(task);
+                        task.setProject(project);
                     }
                     if (collaborator != null) {
                         SubTask collabSubTask;

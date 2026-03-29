@@ -16,7 +16,7 @@ public class Task {
     private Status status;
     private LocalDate dueDate;
     private UUID id;
-
+    private Project project;
     private List<ActivityEntry> activityEntry;
     private List<Tag> tags;
     private List<SubTask> subTasks;
@@ -36,6 +36,7 @@ public class Task {
         this.taskOccurences = new ArrayList<>();
         this.activityEntry = new ArrayList<>();
         this.subTasks = new ArrayList<>();
+        this.project = null;
     }
 
     public void addSubtask(SubTask subTask) {
@@ -106,6 +107,10 @@ public class Task {
         return title;
     }
 
+    public Project getProject() {
+        return project;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -148,6 +153,9 @@ public class Task {
 
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
+    }
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     @Override
