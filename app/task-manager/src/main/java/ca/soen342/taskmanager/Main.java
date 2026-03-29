@@ -178,6 +178,25 @@ public class Main {
                     }
                 }
 
+                case 8 -> {
+                    // List overloaded collaborators
+                    List<Collaborator> overloaded = TaskService.getOverloadedCollaborators(collaborators);
+                    System.out.println("\n--- Overloaded Collaborators ---");
+                    if (overloaded.isEmpty()) {
+                        System.out.println("No collaborators are currently overloaded.");
+                    } else {
+                        System.out.printf("%-20s %-14s %-10s %-6s%n", "Name", "Category", "Assigned", "Limit");
+                        System.out.println("-".repeat(55));
+                        for (Collaborator c : overloaded) {
+                            int openCount = (int) c.getSubTasks().stream()
+                                .filter(s -> s.getStatus() != Status.COMPLETED)
+                                .count();
+                            System.out.printf("%-20s %-14s %-10d %-6d%n",
+                                c.getName(), c.getCategory(), openCount, c.getLimit());
+                        }
+                    }
+                }
+
                 case 0 -> {
                     running = false;
                     System.out.println("Exiting...");
@@ -197,6 +216,8 @@ public class Main {
         System.out.println("5. Assign Collaborator");
         System.out.println("6. View All Tasks");
         System.out.println("7. Export to ICS");
+        System.out.println("7. Create Sample Recurring Task");
+        System.out.println("8. List Overloaded Collaborators");
         System.out.println("0. Exit");
     }
 

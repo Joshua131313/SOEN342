@@ -126,6 +126,15 @@ public class TaskService {
 
     return results;
 }
+    public static List<Collaborator> getOverloadedCollaborators(List<Collaborator> collaborators) {
+    List<Collaborator> overloaded = new ArrayList<>();
+    for (Collaborator c : collaborators) {
+        if (!c.canTakeMoreTasks()) {
+            overloaded.add(c);
+        }
+    }
+    return overloaded;
+}
 
     public void assignCollaborator(Task task, Collaborator collaborator) {
 
