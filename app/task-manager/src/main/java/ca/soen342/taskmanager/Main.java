@@ -1,5 +1,6 @@
 package ca.soen342.taskmanager;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -172,7 +173,73 @@ public class Main {
                             calendarExportService.export(project.getTasks());
                         }
                         case "c" -> {
-                            // implement 3rd option
+                            System.out.println("=== Filtered ICS Export ===");
+                            System.out.println("(All filters are optional. Tasks without a due date are always excluded.)\n");
+
+                            
+                            System.out.print("Filter by status (Open / Completed / Cancelled) or leave blank for all: ");
+                            String filterInput = scanner.nextLine().trim();
+                            Status filterStatus = null;
+                            if (!filterInput.isEmpty()) {
+                                try { filterStatus = Status.fromString(filterInput); }
+                                catch (IllegalArgumentException e) { System.out.println("Invalid status — ignoring."); }
+                            }
+
+                            
+                            System.out.println("Filter by due date range?");
+                            System.out.println("  1) This week (Mon–Sun)");
+                            System.out.println("  2) Custom range");
+                            System.out.println("  Leave blank to skip");
+                            System.out.print("Choice: ");
+                            String dateChoice = scanner.nextLine().trim();
+
+                            LocalDate rangeStart = null;
+                            LocalDate rangeEnd   = null;
+                            if (dateChoice.equals("1")) {
+                                rangeStart = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+                                rangeEnd   = LocalDate.now().with(java.time.DayOfWeek.SUNDAY);
+                                System.out.println("Range set to: " + rangeStart + " → " + rangeEnd);
+                            } else if (dateChoice.equals("2")) {
+                                try {
+                                    System.out.print("Start date (YYYY-MM-DD): ");
+                                    rangeStart = LocalDate.parse(scanner.nextLine().trim());
+                                    System.out.print("End date   (YYYY-MM-DD): ");
+                                    rangeEnd   = LocalDate.parse(scanner.nextLine().trim());
+                                } catch (Exception e) {
+                                    System.out.println("Invalid date format — ignoring date range.");
+                                    rangeStart = null; rangeEnd = null;
+                                }
+                            }
+
+                            
+                            System.out.print("Filter by priority level (1–5) or leave blank for all: ");
+                            String priorityInput = scanner.nextLine().trim();
+                            Integer filterPriority = null;
+                            if (!priorityInput.isEmpty()) {
+                                try { filterPriority = Integer.parseInt(priorityInput); }
+                                catch (NumberFormatException e) { System.out.println("Invalid priority — ignoring."); }
+                            }
+
+                            
+                            System.out.print("Filter by project name or leave blank for all: ");
+                            String filterProject = scanner.nextLine().trim();
+
+                            // Apply all filters
+                            List<Task> filtered = TaskService.getFilteredTasks(
+                                tasks,
+                                filterStatus,
+                                rangeStart,
+                                rangeEnd,
+                                filterPriority,
+                                filterProject.isEmpty() ? null : filterProject
+                            );
+
+                            if (filtered.isEmpty()) {
+                                System.out.println("No eligible tasks matched the filters.");
+                            } else {
+                                String exportedFile = calendarExportService.export(filtered);
+                                System.out.println(filtered.size() + " task(s) exported to: " + exportedFile);
+                            }
                             
                         }
                     }
