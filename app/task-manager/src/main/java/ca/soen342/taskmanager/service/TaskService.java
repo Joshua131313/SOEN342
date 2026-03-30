@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.soen342.taskmanager.domain.Collaborator;
+import ca.soen342.taskmanager.domain.Project;
 import ca.soen342.taskmanager.domain.RecurrencePattern;
 import ca.soen342.taskmanager.domain.SubTask;
 import ca.soen342.taskmanager.domain.Tag;
@@ -125,6 +126,35 @@ public class TaskService {
     }
 
     return results;
+}
+    public static List<Task> getFilteredTasks(
+        List<Task> tasks,
+        Status statusFilter,
+        LocalDate rangeStart,
+        LocalDate rangeEnd,
+        Integer priorityFilter,
+        String projectNameFilter) {
+
+    List<Task> result = new ArrayList<>();
+    for (Task task : tasks) {
+        if (task.getDueDate() == null) continue;  // must have a due date to be eligible
+
+        if (statusFilter != null && task.getStatus() != statusFilter) continue;
+
+        LocalDate due = task.getDueDate();
+        if (rangeStart != null && due.isBefore(rangeStart)) continue;
+        if (rangeEnd   != null && due.isAfter(rangeEnd))    continue;
+
+        if (priorityFilter != null && task.getPriorityLevel() != priorityFilter) continue;
+
+        if (projectNameFilter != null) {
+            Project proj = task.getProject();
+            if (proj == null || !proj.getName().equalsIgnoreCase(projectNameFilter)) continue;
+        }
+
+        result.add(task);
+    }
+    return result;
 }
     public static List<Collaborator> getOverloadedCollaborators(List<Collaborator> collaborators) {
     List<Collaborator> overloaded = new ArrayList<>();
