@@ -3,7 +3,6 @@ package ca.soen342.taskmanager.domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import ca.soen342.taskmanager.enums.Status;
 
@@ -15,7 +14,7 @@ public class Task {
     private int priorityLevel;
     private Status status;
     private LocalDate dueDate;
-    private UUID id;
+    private int id;
     private Project project;
     private List<ActivityEntry> activityEntry;
     private List<Tag> tags;
@@ -24,6 +23,11 @@ public class Task {
     private List<TaskOccurrence> taskOccurences;
     private RecurrencePattern recurrencePattern;
 
+    public Task(String title, String description, int priorityLevel, Status status, LocalDate dueDate, int id) {
+        this(title, description, priorityLevel, status, dueDate); // reuse constructor
+        this.id = id;
+    }
+
     public Task(String title, String description, int priorityLevel, Status status, LocalDate dueDate) {
         this.title = title;
         this.description = description;
@@ -31,12 +35,10 @@ public class Task {
         this.priorityLevel = priorityLevel;
         this.status = status;
         this.dueDate = dueDate;
-        this.id = UUID.randomUUID();
-        this.tags = new ArrayList<Tag>();
+        this.tags = new ArrayList<>();
         this.taskOccurences = new ArrayList<>();
         this.activityEntry = new ArrayList<>();
         this.subTasks = new ArrayList<>();
-        this.project = null;
     }
 
     public void addSubtask(SubTask subTask) {
@@ -91,15 +93,10 @@ public class Task {
         if (!(o instanceof Task))
             return false;
         Task task = (Task) o;
-        return id != null && id.equals(task.id);
+        return id == task.id;
     }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
@@ -113,6 +110,10 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -154,8 +155,41 @@ public class Task {
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
+
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public void setSubTasks(List<SubTask> subTasks) {
+        this.subTasks = subTasks;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<ActivityEntry> getActivityEntry() {
+        return activityEntry;
+    }
+
+    public void setActivityEntry(List<ActivityEntry> activityEntry) {
+        this.activityEntry = activityEntry;
+    }
+
+    public List<TaskOccurrence> getTaskOccurences() {
+        return taskOccurences;
+    }
+
+    public void setTaskOccurences(List<TaskOccurrence> taskOccurences) {
+        this.taskOccurences = taskOccurences;
+    }
+
+    public RecurrencePattern getRecurrencePattern() {
+        return recurrencePattern;
     }
 
     @Override

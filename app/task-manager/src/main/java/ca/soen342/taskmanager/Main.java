@@ -1,10 +1,7 @@
 package ca.soen342.taskmanager;
+import java.util.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
+import ca.soen342.taskmanager.db.DBInit;
 import ca.soen342.taskmanager.domain.Collaborator;
 import ca.soen342.taskmanager.domain.Project;
 import ca.soen342.taskmanager.domain.Task;
@@ -12,11 +9,8 @@ import ca.soen342.taskmanager.enums.Category;
 import ca.soen342.taskmanager.enums.Status;
 import ca.soen342.taskmanager.gateway.ICSExportGateway;
 import ca.soen342.taskmanager.interfaces.CalenderExportGateway;
-import ca.soen342.taskmanager.service.CalendarExportService;
-import ca.soen342.taskmanager.service.ExportToCSV;
-import ca.soen342.taskmanager.service.ImportToCSV;
-import ca.soen342.taskmanager.service.TagsService;
-import ca.soen342.taskmanager.service.TaskService;
+import ca.soen342.taskmanager.service.*;
+import ca.soen342.taskmanager.tables.*;
 import ca.soen342.taskmanager.ui.TaskUI;
 
 public class Main {
@@ -25,48 +19,58 @@ public class Main {
 
     public static void main(String[] args) {
 
-        List<Project> projects = new ArrayList<>();
-        List<Collaborator> collaborators = new ArrayList<>();
+        DBInit.init();
+
+        ProjectsTable projectsTable = new ProjectsTable();
+        TasksTable tasksTable = new TasksTable();
+        CollaboratorsTable collaboratorsTable = new CollaboratorsTable();
 
         TagsService tagsService = new TagsService();
         TaskService taskService = new TaskService(tagsService);
         TaskUI taskUI = new TaskUI();
 
-        List<Task> tasks = new ArrayList<>();
-
         boolean running = true;
 
         while (running) {
+
+            List<Project> projects = projectsTable.getAllProjects();
+            List<Task> tasks = tasksTable.getAllTasks();
+            List<Collaborator> collaborators = collaboratorsTable.getAllCollaborators();
+
             printMenu();
             int choice = getIntInput("Select an option: ");
 
             switch (choice) {
 
                 case 1 -> {
-                    // Import
                     System.out.println("Enter file path: ");
                     String path = scanner.nextLine();
-                    tasks = ImportToCSV.importTasks(path, projects, collaborators);
-                    System.out.println(tasks.size() + " tasks imported successfully.");
+
+                    List<Task> imported = ImportToCSV.importTasks(path, projects, collaborators);
+
+                    for (Task t : imported) {
+                        tasksTable.addTask(t, null);
+                    }
+
                 }
 
                 case 2 -> {
-                    // Export
                     System.out.println("Enter file path: ");
                     String path = scanner.nextLine();
+
                     ExportToCSV.exportTasks(path, tasks, collaborators);
-                    System.out.println(tasks.size() + " tasks exported successfully.");
+                    System.out.println(tasks.size() + " tasks exported.");
                 }
 
                 case 3 -> {
-                    // Create a task through the UI + store in CLI task list
                     Task createdTask = taskUI.createTask();
-                    tasks.add(createdTask);
-                    System.out.println("Task created successfully.");
+
+                    tasksTable.addTask(createdTask, null);
+
+                    System.out.println("Task created and saved to DB.");
                 }
 
                 case 4 -> {
-                    // Search Tasks
                     System.out.println("Enter name (or leave blank): ");
                     String name = scanner.nextLine();
 
@@ -78,13 +82,13 @@ public class Main {
                         status = Status.valueOf(statusInput.toUpperCase());
                     }
 
-                    List<Task> results = TaskService.searchTasks(tasks,
+                    List<Task> results = TaskService.searchTasks(
+                            tasks,
                             name.isEmpty() ? null : name,
                             status,
                             null,
                             null);
 
-                    System.out.println("\n--- Results ---");
                     results.forEach(System.out::println);
                 }
 
@@ -99,168 +103,56 @@ public class Main {
                     System.out.println("Enter collaborator name:");
                     String name = scanner.nextLine();
 
-                    // Try to reuse an existing collaborator so their open-task count is preserved
                     Collaborator collaborator = findCollaboratorByName(collaborators, name);
 
-                    // Only ask for category if this is a brand new collaborator
                     if (collaborator == null) {
                         System.out.println("Enter category (JUNIOR, INTERMEDIATE, SENIOR):");
                         Category category = Category.valueOf(scanner.nextLine().toUpperCase());
 
                         collaborator = new Collaborator(name, category);
-                        collaborators.add(collaborator);
+
+                        collaboratorsTable.addCollaborator(collaborator);
                     }
 
                     try {
                         taskService.assignCollaborator(task, collaborator);
+
                         System.out.println("Collaborator assigned.");
+
                     } catch (Exception e) {
                         System.out.println("Error: " + e.getMessage());
                     }
                 }
 
                 case 6 -> {
-                    // View all tasks
-                    System.out.println("\n--- All tasks ---");
+                    System.out.println("\n--- All tasks (DB) ---");
                     tasks.forEach(System.out::println);
                 }
+
                 case 7 -> {
                     CalenderExportGateway gateway = new ICSExportGateway();
                     CalendarExportService calendarExportService = new CalendarExportService(gateway);
-                    System.out.println("Export tasks to ICS");
-                    System.out.println("a) Export a single task");
-                    System.out.println("b) Export all tasks in a project");
-                    System.out.println("c) Export filtered tasks");
-                    System.out.println("d) Go back");
-                    System.out.print("Choose option: ");
 
-                    String subChoice = scanner.nextLine().toLowerCase();
-
-                    switch(subChoice) {
-                        case "a" -> {
-                            System.out.println("Enter task title: ");
-                            String taskTitle = scanner.nextLine();
-                            Task task = null;
-
-                            for(Task t : tasks) {
-                                if(t.getTitle().toLowerCase().equals(taskTitle.toLowerCase())) {
-                                    task = t;
-                                    break;
-                                }
-                            }
-                            if(task == null) {
-                                System.out.println("Task not found.");
-                                break;
-                            }
-                            calendarExportService.export(List.of(task));
-                        }
-                        case "b" -> {
-                            System.out.println("Enter project name: ");
-                            String projectName = scanner.nextLine();
-
-                            Project project = null;
-
-                            for(Project p : projects) {
-                                if(p.getName().toLowerCase().equals(projectName.toLowerCase())) {
-                                    project = p;
-                                    break;
-                                }
-                            }
-                            if(project == null) {
-                                System.out.println("No project found.");
-                                break;
-                            }
-                            calendarExportService.export(project.getTasks());
-                        }
-                        case "c" -> {
-                            System.out.println("=== Filtered ICS Export ===");
-                            System.out.println("(All filters are optional. Tasks without a due date are always excluded.)\n");
-
-                            
-                            System.out.print("Filter by status (Open / Completed / Cancelled) or leave blank for all: ");
-                            String filterInput = scanner.nextLine().trim();
-                            Status filterStatus = null;
-                            if (!filterInput.isEmpty()) {
-                                try { filterStatus = Status.fromString(filterInput); }
-                                catch (IllegalArgumentException e) { System.out.println("Invalid status — ignoring."); }
-                            }
-
-                            
-                            System.out.println("Filter by due date range?");
-                            System.out.println("  1) This week (Mon–Sun)");
-                            System.out.println("  2) Custom range");
-                            System.out.println("  Leave blank to skip");
-                            System.out.print("Choice: ");
-                            String dateChoice = scanner.nextLine().trim();
-
-                            LocalDate rangeStart = null;
-                            LocalDate rangeEnd   = null;
-                            if (dateChoice.equals("1")) {
-                                rangeStart = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
-                                rangeEnd   = LocalDate.now().with(java.time.DayOfWeek.SUNDAY);
-                                System.out.println("Range set to: " + rangeStart + " → " + rangeEnd);
-                            } else if (dateChoice.equals("2")) {
-                                try {
-                                    System.out.print("Start date (YYYY-MM-DD): ");
-                                    rangeStart = LocalDate.parse(scanner.nextLine().trim());
-                                    System.out.print("End date   (YYYY-MM-DD): ");
-                                    rangeEnd   = LocalDate.parse(scanner.nextLine().trim());
-                                } catch (Exception e) {
-                                    System.out.println("Invalid date format — ignoring date range.");
-                                    rangeStart = null; rangeEnd = null;
-                                }
-                            }
-
-                            
-                            System.out.print("Filter by priority level (1–5) or leave blank for all: ");
-                            String priorityInput = scanner.nextLine().trim();
-                            Integer filterPriority = null;
-                            if (!priorityInput.isEmpty()) {
-                                try { filterPriority = Integer.parseInt(priorityInput); }
-                                catch (NumberFormatException e) { System.out.println("Invalid priority — ignoring."); }
-                            }
-
-                            
-                            System.out.print("Filter by project name or leave blank for all: ");
-                            String filterProject = scanner.nextLine().trim();
-
-                            // Apply all filters
-                            List<Task> filtered = TaskService.getFilteredTasks(
-                                tasks,
-                                filterStatus,
-                                rangeStart,
-                                rangeEnd,
-                                filterPriority,
-                                filterProject.isEmpty() ? null : filterProject
-                            );
-
-                            if (filtered.isEmpty()) {
-                                System.out.println("No eligible tasks matched the filters.");
-                            } else {
-                                String exportedFile = calendarExportService.export(filtered);
-                                System.out.println(filtered.size() + " task(s) exported to: " + exportedFile);
-                            }
-                            
-                        }
-                    }
+                    System.out.println("Export ICS (all tasks)");
+                    calendarExportService.export(tasks);
                 }
 
                 case 8 -> {
-                    // List overloaded collaborators
                     List<Collaborator> overloaded = TaskService.getOverloadedCollaborators(collaborators);
+
                     System.out.println("\n--- Overloaded Collaborators ---");
-                    if (overloaded.isEmpty()) {
-                        System.out.println("No collaborators are currently overloaded.");
-                    } else {
-                        System.out.printf("%-20s %-14s %-10s %-6s%n", "Name", "Category", "Assigned", "Limit");
-                        System.out.println("-".repeat(55));
-                        for (Collaborator c : overloaded) {
-                            int openCount = (int) c.getSubTasks().stream()
+
+                    for (Collaborator c : overloaded) {
+                        int openCount = (int) c.getSubTasks().stream()
                                 .filter(s -> s.getStatus() != Status.COMPLETED)
                                 .count();
-                            System.out.printf("%-20s %-14s %-10d %-6d%n",
-                                c.getName(), c.getCategory(), openCount, c.getLimit());
-                        }
+
+                        System.out.printf(
+                                "%s (%s) -> %d / %d%n",
+                                c.getName(),
+                                c.getCategory(),
+                                openCount,
+                                c.getLimit());
                     }
                 }
 
@@ -276,14 +168,13 @@ public class Main {
 
     private static void printMenu() {
         System.out.println("\n===== TASK MANAGER CLI =====");
-        System.out.println("1. Import Tasks from CSV");
-        System.out.println("2. Export Tasks to CSV");
+        System.out.println("1. Import Tasks (to DB)");
+        System.out.println("2. Export Tasks");
         System.out.println("3. Create Task");
         System.out.println("4. Search Tasks");
         System.out.println("5. Assign Collaborator");
         System.out.println("6. View All Tasks");
         System.out.println("7. Export to ICS");
-        System.out.println("7. Create Sample Recurring Task");
         System.out.println("8. List Overloaded Collaborators");
         System.out.println("0. Exit");
     }
@@ -294,8 +185,6 @@ public class Main {
     }
 
     private static Task selectTask(List<Task> tasks) {
-        System.out.println("\nSelect a task:");
-
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println(i + ": " + tasks.get(i).getTitle());
         }
@@ -304,7 +193,6 @@ public class Main {
         return tasks.get(index);
     }
 
-    // Reuse the same collaborator object so task limits are tracked correctly
     private static Collaborator findCollaboratorByName(List<Collaborator> collaborators, String name) {
         for (Collaborator collaborator : collaborators) {
             if (collaborator.getName().equalsIgnoreCase(name)) {

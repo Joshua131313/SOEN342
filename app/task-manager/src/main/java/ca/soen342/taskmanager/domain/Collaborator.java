@@ -12,8 +12,13 @@ public class Collaborator {
     private int assigned;
     private Category category;
     private List<SubTask> subTasks;
+    private int id;
     
-
+       
+    public Collaborator(String name, Category category, int id) {
+        this(name, category);
+        this.id = id;
+    }
     public Collaborator(String name, Category category) {
         this.name = name;
         this.category = category;
@@ -70,7 +75,12 @@ public class Collaborator {
                 return true;
         }
     }
-
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
     public void assignSubtask(SubTask subtask) {
         subTasks.add(subtask);
     }

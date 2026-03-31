@@ -59,7 +59,7 @@ public class ICSExportGateway implements CalenderExportGateway {
                     }
                 }
                 event.getProperties().add(new Description(description));
-                event.getProperties().add(new Uid(task.getId().toString()));
+                event.getProperties().add(new Uid(String.valueOf(task.getId())));
                 ;
                 event.getProperties().add(new Status(mapStatus(task.getStatus().toString())));
                 event.getProperties().add(new Priority(task.getPriorityLevel()));
