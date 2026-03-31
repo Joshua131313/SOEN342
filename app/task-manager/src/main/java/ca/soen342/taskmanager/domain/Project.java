@@ -2,25 +2,30 @@ package ca.soen342.taskmanager.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Project {
     private String name;
     private String description;
     private List<Task> tasks;
     private List<Collaborator> collaborators;
-    private UUID id;
+    private int id;
 
+    public Project(String name, String description, int id) {
+        this(name, description);
+        this.id = id;
+    }
     public Project(String name, String description) {
         this.name = name;
         this.description = description;
-        this.id = UUID.randomUUID();
-        tasks = new ArrayList<>();
-        collaborators = new ArrayList<>();
-    };
+        this.tasks = new ArrayList<>();
+        this.collaborators = new ArrayList<>();
+    }
 
-    public UUID getId() {
+    public int getId() {
         return this.id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
     public String getName() {
         return name;
@@ -57,6 +62,7 @@ public class Project {
     public void addTask(Task task) {
         tasks.add(task);
     }
+
     public void addCollaborator(Collaborator collaborator) {
         collaborators.add(collaborator);
     }
